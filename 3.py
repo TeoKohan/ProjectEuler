@@ -11,7 +11,6 @@ def is_prime(p):
     return True
 
 def next_prime(p):
-    print('next prime')
     p += 1 + (p%2)
     while not is_prime(p):
         p += 2
@@ -24,7 +23,6 @@ def lowest_factor(n):
     for p in P:
         if n % p == 0:
             return p
-    print('end factors')
     q = next_prime(P[-1])
     while n % q != 0:
         P += [q]
@@ -34,6 +32,5 @@ def lowest_factor(n):
 while N != 1:
     factor = lowest_factor(N)
     S.add(factor)
-    print(N, factor, N // factor)
     N //= factor
-print(S)
+print(max(S))
