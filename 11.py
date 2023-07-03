@@ -20,8 +20,8 @@ s = '''08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
 20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16
 20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54
 01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48'''
-size = 20
-search_size = 3
+SIZE = 20
+SEARCH_SIZE = 3
 
 class V2:
     def __init__(self, x: int, y: int) -> None:
@@ -43,7 +43,7 @@ N = [list(map(int, n.split())) for n in N]
 result = 0
 for v in [V2(x, y) for x in range(20) for y in range(20)]:
     for d in [V2(x, y) for x in range(-1, 2) for y in range(-1, 2) if x != 0 or y != 0]:
-        if 0 <= d.x * search_size + v.x < size and 0 <= d.y * search_size + v.y < size:
+        if 0 <= d.x * SEARCH_SIZE + v.x < SIZE and 0 <= d.y * SEARCH_SIZE + v.y < SIZE:
             cells = [v + d * a for a in range(4)]
             candidate = 1
             for cell in cells:
