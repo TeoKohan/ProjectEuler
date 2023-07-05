@@ -1,5 +1,5 @@
-from lib.sieve import Factor
+from lib.sieve import factors
 
 N = 600851475143
-factors = Factor(600851475143).factors()
-print(max(factors))
+fs = factors(600851475143)
+print(max(fs))

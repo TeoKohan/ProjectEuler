@@ -9,13 +9,18 @@ class Sieve:
         self.capacity = capacity
         self.sieve = [True] * (self.capacity)
         self.sieve[0] = False
+        self.sieve[1] = False
 
         for i in range(capacity):
             if self.sieve[i]:
                 self.__set_prime(i)
     
+    def is_prime(self, n):
+        assert n < self.capacity
+        return self.sieve[n]
+    
     def primes(self):
-        return [i for i, v in enumerate(self.sieve, start=1) if v]
+        return [i for i, v in enumerate(self.sieve) if v]
 
 class Primes:
     def next_prime(self):
@@ -39,45 +44,43 @@ class Primes:
          return list(self)[item]
 
     def is_prime(self, n):
-        for p in self.primes:
-            if n % p == 0:
-                return False
-        while self.primes[-1] < sqrt(n):
-            if n % self.next_prime() == 0:
+        for div in range(2, int(sqrt(n))+1):
+            if n % div == 0:
                 return False
         return True
-
-class Factor:
-    def __init__(self, n, precomputed=Sieve(2**15).primes()) -> None:
-        self.n = n
-        self.primes = Primes(precomputed)
-
-    def __lowest_factor(self, n):
-        assert n > 1
-        for p in list(self.primes):
-            if n % p == 0:
-                return p
-        while n % self.primes.next_prime() != 0:
-            pass
-        return max(self.primes)
     
-    def factors(self):
-        F = []
-        while self.n > 1:
-            f = self.__lowest_factor(self.n)
-            F += [f]
-            self.n //= f
-        return F
+def factors(n):
+    F = []
 
-    def divisors(self, n):
-        def products(factors):
-            head, *tail = factors
-            if tail == []:
-                return [head]
-            else:
-                return [a * b for a in [1, head] for b in products(tail)]
-        F = self.factors(n)
-        if F == []:
-            return F
+    while n % 2 == 0:
+            F += [2]
+            n //= 2
+    d = 3
+    while n > 1:
+        while n % d == 0:
+            F += [d]
+            n //= d
+        d += 2 - (d % 2 == 0)
+    return F
+
+def divisors(n) -> list:
+    def products(factors):
+        head, *tail = factors
+        if tail == []:
+            return [1, head]
         else:
-            return products(F)
+            return [a * b for a in [1, head] for b in products(tail)]
+    
+    F = factors(n)
+    if F == []:
+        return set(F)
+    else:
+        return set(products(F))
+
+def proper_divisors(n) -> list:
+    if n < 2:
+        return []
+    else:
+        ds = divisors(n)
+        ds.remove(n)
+        return ds
