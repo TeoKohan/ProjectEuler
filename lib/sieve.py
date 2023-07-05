@@ -1,36 +1,32 @@
 from math import sqrt, ceil
 
 class Sieve:
-    def __register_prime(self, prime):
+    def __set_prime(self, prime):
         for i in range(prime * 2, self.capacity, prime):
             self.sieve[i] = False
 
     def __init__(self, capacity) -> None:
         self.capacity = capacity
-        self.sieve = [True] * (self.capacity+1)
+        self.sieve = [True] * (self.capacity)
         self.sieve[0] = False
-        if capacity > 0:
-            self.sieve[1] = False
 
         for i in range(capacity):
             if self.sieve[i]:
-                self.__register_prime(i)
+                self.__set_prime(i)
     
     def primes(self):
-        return [i for i, v in enumerate(self.sieve) if v]
+        return [i for i, v in enumerate(self.sieve, start=1) if v]
 
 class Primes:
     def next_prime(self):
-        p = 2 if self.index < 2 else self.index + 1 + self.index % 2
+        p = 2 if self.primes[-1] < 2 else self.primes[-1] + 1 + self.primes[-1] % 2
         while not self.is_prime(p):
             p += 2
         self.primes += [p]
-        self.index = p
         return p
 
     def __init__(self, precomputed=Sieve(2**15).primes()) -> None:
         self.primes = [2] if precomputed == [] else precomputed
-        self.index  = max(self.primes)
     
     def __len__(self) -> int:
         return len(self.primes)
@@ -39,9 +35,13 @@ class Primes:
         for prime in self.primes:
             yield prime
 
+    def __getitem__(self, item):
+         return list(self)[item]
+
     def is_prime(self, n):
-        if next((True for p in self.primes if n % p == 0), False):
-            return False
+        for p in self.primes:
+            if n % p == 0:
+                return False
         while self.primes[-1] < sqrt(n):
             if n % self.next_prime() == 0:
                 return False
